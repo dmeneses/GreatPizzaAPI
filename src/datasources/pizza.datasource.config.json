@@ -1,0 +1,11 @@
+{
+  "name": "Pizza",
+  "connector": "mongodb",
+  "url": "mongodb://pizzaapi:4KcE5XrF.xkGQnz@ds257698.mlab.com:57698/pizzadb",
+  "host": "",
+  "port": 0,
+  "user": "",
+  "password": "",
+  "database": "",
+  "useNewUrlParser": true
+}
