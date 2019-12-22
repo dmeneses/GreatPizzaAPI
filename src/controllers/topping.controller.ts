@@ -17,20 +17,20 @@ import {
   del,
   requestBody,
 } from '@loopback/rest';
-import {Topping} from '../models';
-import {ToppingRepository} from '../repositories';
+import { Topping } from '../models';
+import { ToppingRepository } from '../repositories';
 
-export class ToppingControllerController {
+export class ToppingController {
   constructor(
     @repository(ToppingRepository)
-    public toppingRepository : ToppingRepository,
-  ) {}
+    public toppingRepository: ToppingRepository,
+  ) { }
 
   @post('/toppings', {
     responses: {
       '200': {
         description: 'Topping model instance',
-        content: {'application/json': {schema: getModelSchemaRef(Topping)}},
+        content: { 'application/json': { schema: getModelSchemaRef(Topping) } },
       },
     },
   })
@@ -54,7 +54,7 @@ export class ToppingControllerController {
     responses: {
       '200': {
         description: 'Topping model count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -72,7 +72,7 @@ export class ToppingControllerController {
           'application/json': {
             schema: {
               type: 'array',
-              items: getModelSchemaRef(Topping, {includeRelations: true}),
+              items: getModelSchemaRef(Topping, { includeRelations: true }),
             },
           },
         },
@@ -89,7 +89,7 @@ export class ToppingControllerController {
     responses: {
       '200': {
         description: 'Topping PATCH success count',
-        content: {'application/json': {schema: CountSchema}},
+        content: { 'application/json': { schema: CountSchema } },
       },
     },
   })
@@ -97,7 +97,7 @@ export class ToppingControllerController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Topping, {partial: true}),
+          schema: getModelSchemaRef(Topping, { partial: true }),
         },
       },
     })
@@ -113,7 +113,7 @@ export class ToppingControllerController {
         description: 'Topping model instance',
         content: {
           'application/json': {
-            schema: getModelSchemaRef(Topping, {includeRelations: true}),
+            schema: getModelSchemaRef(Topping, { includeRelations: true }),
           },
         },
       },
@@ -138,7 +138,7 @@ export class ToppingControllerController {
     @requestBody({
       content: {
         'application/json': {
-          schema: getModelSchemaRef(Topping, {partial: true}),
+          schema: getModelSchemaRef(Topping, { partial: true }),
         },
       },
     })
