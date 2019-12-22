@@ -17,6 +17,14 @@ export class Pizza extends Entity {
   })
   name: string;
 
+  @property({
+    type: 'array',
+    itemType: 'string'
+  })
+  toppings?: string[];
+
+  [prop: string]: any;
+
   constructor(data?: Partial<Pizza>) {
     super(data);
   }

@@ -19,11 +19,14 @@ import {
 } from '@loopback/rest';
 import { Pizza } from '../models';
 import { PizzaRepository } from '../repositories';
+import { ToppingRepository } from '../repositories/topping.repository';
 
 export class PizzaController {
   constructor(
     @repository(PizzaRepository)
     public pizzaRepository: PizzaRepository,
+    @repository(ToppingRepository)
+    public toppingRepository: ToppingRepository,
   ) { }
 
   @post('/pizzas', {
@@ -170,5 +173,23 @@ export class PizzaController {
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.pizzaRepository.deleteById(id);
+  }
+
+  @put('/pizzas/{pizzaId}/topping/{toppingId}', {
+    responses: {
+      '204': {
+        description: 'Pizza PUT success',
+      },
+    },
+  })
+  async addTopping(
+    @param.path.string('pizzaId') pizzaId: string,
+    @param.path.string('toppingId') toppingid: string
+  ): Promise<void> {
+    const pizza = await this.pizzaRepository.findById(pizzaId);
+    const topping = await this.toppingRepository.findById(toppingid);
+    const toppings = pizza.toppings || [];
+    toppings.push(topping.name);
+    await this.pizzaRepository.updateById(pizzaId, { toppings: toppings });
   }
 }
