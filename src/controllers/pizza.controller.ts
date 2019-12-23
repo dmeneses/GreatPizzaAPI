@@ -17,7 +17,7 @@ import {
   del,
   requestBody,
 } from '@loopback/rest';
-import { Pizza } from '../models';
+import { Pizza, Topping } from '../models';
 import { PizzaRepository } from '../repositories';
 import { ToppingRepository } from '../repositories/topping.repository';
 
@@ -50,6 +50,10 @@ export class PizzaController {
     })
     pizza: Omit<Pizza, '_id'>,
   ): Promise<Pizza> {
+    if (pizza.toppings) {
+      pizza.toppingIds = pizza.toppings.map((topping: Topping) => topping._id);
+      pizza.toppings = undefined;
+    }
     return this.pizzaRepository.create(pizza);
   }
 
@@ -193,6 +197,22 @@ export class PizzaController {
     const pizza = await this.pizzaRepository.findById(pizzaId);
     const toppings = pizza.toppingIds || [];
     toppings.push(toppingId);
+    await this.pizzaRepository.updateById(pizzaId, { toppingIds: toppings });
+  }
+
+  @del('/pizzas/{pizzaId}/topping/{toppingId}', {
+    responses: {
+      '204': {
+        description: 'Pizza PUT success',
+      },
+    },
+  })
+  async deleteTopping(
+    @param.path.string('pizzaId') pizzaId: string,
+    @param.path.string('toppingId') toppingId: string
+  ): Promise<void> {
+    const pizza = await this.pizzaRepository.findById(pizzaId);
+    const toppings = pizza.toppingIds?.filter((toppId) => toppId !== toppingId);
     await this.pizzaRepository.updateById(pizzaId, { toppingIds: toppings });
   }
 }
