@@ -85,7 +85,7 @@ export class PizzaController {
   async find(
     @param.query.object('filter', getFilterSchemaFor(Pizza)) filter?: Filter<Pizza>,
   ): Promise<Pizza[]> {
-    return this.pizzaRepository.find(filter);
+    return this.pizzaRepository.find({ fields: { toppingIds: false }, ...filter });
   }
 
   @patch('/pizzas', {
@@ -126,7 +126,11 @@ export class PizzaController {
     @param.path.string('id') id: string,
     @param.query.object('filter', getFilterSchemaFor(Pizza)) filter?: Filter<Pizza>
   ): Promise<Pizza> {
-    return this.pizzaRepository.findById(id, filter);
+    const pizza = await this.pizzaRepository.findById(id, filter);
+    const toppings = await this.toppingRepository.find({ where: { _id: { inq: pizza.toppingIds } } });
+    pizza.toppings = toppings;
+    pizza.toppingIds = undefined;
+    return pizza;
   }
 
   @patch('/pizzas/{id}', {
@@ -184,12 +188,11 @@ export class PizzaController {
   })
   async addTopping(
     @param.path.string('pizzaId') pizzaId: string,
-    @param.path.string('toppingId') toppingid: string
+    @param.path.string('toppingId') toppingId: string
   ): Promise<void> {
     const pizza = await this.pizzaRepository.findById(pizzaId);
-    const topping = await this.toppingRepository.findById(toppingid);
-    const toppings = pizza.toppings || [];
-    toppings.push(topping.name);
-    await this.pizzaRepository.updateById(pizzaId, { toppings: toppings });
+    const toppings = pizza.toppingIds || [];
+    toppings.push(toppingId);
+    await this.pizzaRepository.updateById(pizzaId, { toppingIds: toppings });
   }
 }

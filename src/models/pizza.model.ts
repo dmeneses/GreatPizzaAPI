@@ -1,4 +1,5 @@
 import { Entity, model, property } from '@loopback/repository';
+import { Topping } from './topping.model';
 
 @model({ settings: { strict: false } })
 export class Pizza extends Entity {
@@ -21,7 +22,13 @@ export class Pizza extends Entity {
     type: 'array',
     itemType: 'string'
   })
-  toppings?: string[];
+  toppingIds?: string[];
+
+  @property({
+    type: 'array',
+    itemType: 'object'
+  })
+  toppings?: Topping[];
 
   [prop: string]: any;
 
